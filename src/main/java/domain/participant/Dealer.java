@@ -24,9 +24,13 @@ public class Dealer extends Gamer {
     }
 
     private void validateCanHit() {
-        if (getHand().calculateTotalScore() > HIT_THRESHOLD) {
+        if (getTotalScore() > HIT_THRESHOLD) {
             throw new IllegalStateException("[ERROR] 딜러의 점수가 16점을 초과하므로 카드를 뽑을 수 없습니다.");
         }
+    }
+
+    private int getTotalScore() {
+        return getHand().calculateTotalScore();
     }
 
     @Override

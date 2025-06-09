@@ -4,26 +4,22 @@ import domain.match.MatchResult;
 import domain.participant.Dealer;
 import domain.participant.Gamer;
 import domain.participant.Player;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BetSystem {
 
-    private static final long SET_PROFIT = 0L;
+    private final BettingRecord bettingRecord;
+    private final ProfitRecord profitRecord;
 
-    private final Map<Gamer, BetAmount> bettingRecord;
-    private final Map<Gamer, Long> profitRecord;
-
-    public BetSystem() {
-        this.bettingRecord = new LinkedHashMap<>();
-        this.profitRecord = new LinkedHashMap<>();
-        this.profitRecord.put(new Dealer(), SET_PROFIT);
+    public BetSystem(final BettingRecord bettingRecord, final ProfitRecord profitRecord) {
+        this.bettingRecord = bettingRecord;
+        this.profitRecord = profitRecord;
     }
 
     public void betting(final Player player, final long betAmount) {
-        bettingRecord.put(player, BetAmount.from(betAmount));
-        profitRecord.put(player, SET_PROFIT);
+        bettingRecord.betRegister(player, BetAmount.from(betAmount));
+        profitRecord.initialize(player);
     }
 
     public Map<Gamer, Long> calculateProfit(final Dealer dealer, final List<Player> players) {
@@ -34,7 +30,7 @@ public class BetSystem {
             calculatePlayerBlackjackWin(dealer, player, dealerMatchResult);
         }
 
-        return profitRecord;
+        return profitRecord.profitRecord();
     }
 
     private void calculatePlayerBlackjackWin(final Dealer dealer, final Player player,
@@ -45,8 +41,8 @@ public class BetSystem {
 
             Long blackjackProfit = betAmount.calculateBlackjackProfit();
 
-            profitRecord.put(player, betAmount.plus(blackjackProfit));
-            profitRecord.put(dealer, dealerProfit - blackjackProfit);
+            profitRecord.update(player, betAmount.plus(blackjackProfit));
+            profitRecord.update(dealer, dealerProfit - blackjackProfit);
         }
     }
 
@@ -61,11 +57,11 @@ public class BetSystem {
     private void calculateDealerWin(final Dealer dealer, final Player player, final MatchResult dealerMatchResult) {
         if (isDealerWin(dealerMatchResult)) {
             BetAmount betAmount = bettingRecord.get(player);
-            Long dealerProfit = profitRecord.get(dealer);
-            Long playerProfit = profitRecord.get(player);
+            long dealerProfit = profitRecord.get(dealer);
+            long playerProfit = profitRecord.get(player);
 
-            profitRecord.put(player, playerProfit - (betAmount.getValue()));
-            profitRecord.put(dealer, dealerProfit + (betAmount.getValue()));
+            profitRecord.update(player, playerProfit - (betAmount.getValue()));
+            profitRecord.update(dealer, dealerProfit + (betAmount.getValue()));
         }
     }
 
@@ -76,11 +72,11 @@ public class BetSystem {
     private void calculatePlayerWin(final Dealer dealer, final Player player, final MatchResult dealerMatchResult) {
         if (isDealerLose(dealerMatchResult)) {
             BetAmount betAmount = bettingRecord.get(player);
-            Long playerProfit = profitRecord.get(player);
-            Long dealerProfit = profitRecord.get(dealer);
+            long playerProfit = profitRecord.get(player);
+            long dealerProfit = profitRecord.get(dealer);
 
-            profitRecord.put(player, betAmount.plus(playerProfit));
-            profitRecord.put(dealer, dealerProfit - betAmount.getValue());
+            profitRecord.update(player, betAmount.plus(playerProfit));
+            profitRecord.update(dealer, dealerProfit - betAmount.getValue());
         }
     }
 

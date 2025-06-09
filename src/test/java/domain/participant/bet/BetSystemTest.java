@@ -26,7 +26,7 @@ class BetSystemTest {
         Player player = new Player("도기");
         long betAmount = 100;
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
 
         //when //then
         assertThatCode(() -> betSystem.betting(player, betAmount))
@@ -40,7 +40,7 @@ class BetSystemTest {
         Player player = new Player("도기");
         long betAmount = -1;
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
 
         //when //then
         assertThatThrownBy(() -> betSystem.betting(player, betAmount))
@@ -61,7 +61,7 @@ class BetSystemTest {
 
         Dealer dealer = new Dealer();
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         betSystem.betting(pobi, 10000L);
         betSystem.betting(jason, 20000L);
 
@@ -105,7 +105,7 @@ class BetSystemTest {
                 )
         );
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         betSystem.betting(dogi, 1000L);
         betSystem.betting(pobi, 1000L);
 
@@ -163,7 +163,7 @@ class BetSystemTest {
         dogi.prepareGame(deck);
         dogi.hit(deck);
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         betSystem.betting(dogi, 1000L);
 
         //when
@@ -190,7 +190,7 @@ class BetSystemTest {
                 )
         );
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         betSystem.betting(player, 1000L);
 
         List<Card> cards = new ArrayList<>(
@@ -231,7 +231,7 @@ class BetSystemTest {
         );
         Dealer dealer = new Dealer();
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         betSystem.betting(player, 1000L);
 
         List<Card> cards = new ArrayList<>(
@@ -272,7 +272,7 @@ class BetSystemTest {
         );
         Dealer dealer = new Dealer();
 
-        BetSystem betSystem = new BetSystem();
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         betSystem.betting(player, 1000L);
 
         List<Card> cards = new ArrayList<>(

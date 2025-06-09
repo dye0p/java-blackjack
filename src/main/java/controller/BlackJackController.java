@@ -8,6 +8,8 @@ import domain.participant.Dealer;
 import domain.participant.Gamer;
 import domain.participant.Player;
 import domain.participant.bet.BetSystem;
+import domain.participant.bet.BettingRecord;
+import domain.participant.bet.ProfitRecord;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,8 @@ public class BlackJackController {
     }
 
     public void run() {
-        BetSystem betSystem = new BetSystem();
+        //controller가 BettingRecord, ProfitRecord 를 아는 것?
+        BetSystem betSystem = new BetSystem(new BettingRecord(), new ProfitRecord());
         Deck deck = prepareDeck();
         List<Player> players = setPlayers();
         Dealer dealer = new Dealer();
@@ -64,8 +67,8 @@ public class BlackJackController {
 
     private boolean isPrepareCardsBlackjack(final Dealer dealer, final List<Player> players) {
         return dealer.isBlackjack()
-                || players.stream()
-                .anyMatch(Gamer::isBlackjack);
+               || players.stream()
+                       .anyMatch(Gamer::isBlackjack);
     }
 
     private void playerBetting(final List<Player> players, final BetSystem betSystem) {

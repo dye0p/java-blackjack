@@ -5,24 +5,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CardsInitializer {
+public class DeckFactory {
 
     private final ShuffleStrategy shuffler;
 
-    public CardsInitializer(final ShuffleStrategy shuffler) {
+    public DeckFactory(final ShuffleStrategy shuffler) {
         this.shuffler = shuffler;
     }
 
-    public List<Card> initialize() {
+    public Deck create() {
         List<Card> cards = createCards();
         return shuffleCards(cards);
     }
 
-    private List<Card> shuffleCards(final List<Card> cards) {
+    private Deck shuffleCards(final List<Card> cards) {
         List<Card> shuffleCards = new ArrayList<>(cards);
         shuffler.shuffle(shuffleCards);
 
-        return shuffleCards;
+        return Deck.from(shuffleCards);
     }
 
     private List<Card> createCards() {
